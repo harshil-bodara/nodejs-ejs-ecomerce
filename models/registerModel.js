@@ -23,7 +23,7 @@ module.exports = (sequelize) => {
     },
     cpassword: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     files: {
       type: DataTypes.STRING,
