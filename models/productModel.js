@@ -3,32 +3,32 @@ const Sequelize = require("sequelize");
 module.exports = (sequelize) => {
   const { DataTypes } = Sequelize;
 
-  const register = sequelize.define("registerUser", {
+  const register = sequelize.define("products", {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    fullName: {
+    productName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    email: {
+    description: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    password: {
+    category: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    cpassword: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    files: {
-      type: DataTypes.STRING,
+    price: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-    }
+    },
+    // files: {
+    //   type: DataTypes.STRING,
+    //   allowNull: true,
+    // },
   });
   return register;
 };

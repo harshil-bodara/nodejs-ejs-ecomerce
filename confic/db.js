@@ -17,6 +17,8 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.register = require("../models/registerModel.js")(sequelize, DataTypes);
+db.category = require("../models/categoryModel.js")(sequelize, DataTypes);
+db.product = require("../models/productModel.js")(sequelize, DataTypes);
 
 db.sequelize.sync().then(() => {
   console.log("done");
