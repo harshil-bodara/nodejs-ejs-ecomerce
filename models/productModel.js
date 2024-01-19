@@ -25,10 +25,10 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    // files: {
-    //   type: DataTypes.STRING,
-    //   allowNull: true,
-    // },
+    files: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    }
   });
   return register;
 };

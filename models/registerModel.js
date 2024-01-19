@@ -9,12 +9,18 @@ module.exports = (sequelize) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
+    roll: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     fullName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
     email: {
       type: DataTypes.STRING,
+      unique: true,
+      isEmail: true,
       allowNull: false,
     },
     password: {
