@@ -3,16 +3,16 @@ const Sequelize = require("sequelize");
 module.exports = (sequelize) => {
   const { DataTypes } = Sequelize;
 
-  const categorys = sequelize.define("productCategories", {
+  const categoryScheme = sequelize.define("Category", {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    categoryName: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
   });
-  return categorys;
+  return categoryScheme;
 };

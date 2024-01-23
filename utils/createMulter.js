@@ -1,6 +1,7 @@
 const multer = require("multer");
 
-const uploads = multer({
+try {
+  const uploads = multer({
     storage: multer.diskStorage({
       destination: (req, file, cb) => {
         cb(null, "upload/");
@@ -9,6 +10,9 @@ const uploads = multer({
         cb(null, new Date().valueOf() + "_" + file.originalname);
       },
     }),
-  }).single("files");
+  });
 
-  module.exports = uploads
+  module.exports = uploads;
+} catch (error) {
+  console.log("error", error);
+}

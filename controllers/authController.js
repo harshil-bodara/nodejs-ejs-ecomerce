@@ -1,5 +1,5 @@
 const db = require("../confic/db");
-const { register } = db;
+const { user } = db;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -8,53 +8,39 @@ const sendMail = require("../utils/sendMail");
 
 const registerUser = async (req, res) => {
   try {
-    const { roll, fullName, email, password, cpassword, files } = req.body;
-    const allReadyExistUser = await register.findOne({
+    const { fullName, email, password, profile } = req.body;
+    const allReadyExistUser = await user.findOne({
       where: {
         email: email,
       },
     });
-    if (allReadyExistUser) {
-      throw new Error("User Already Exists");
+
+    if (!fullName && !email && !password && !profile) {
+      throw new Error("All fields are required");
     } else {
-      if (!roll && !fullName && !email && !password && !cpassword && !files) {
-        throw new Error("All fields are required");
+      if (allReadyExistUser) {
+        throw new Error("User Already Exists");
       } else {
-        if (password === cpassword) {
-          const salt = await bcrypt.genSalt(10);
-          const hashPassword = await bcrypt.hash(password, salt);
-          const createNewuser = await register.create({
-            roll: roll,
-            fullName: fullName,
-            email: email,
-            password: hashPassword,
-            cpassword: hashPassword,
-            files: files,
-          });
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(password, salt);
+        const createNewuser = await user.create({
+          fullName: fullName,
+          email: email,
+          password: hashPassword,
+          profile: profile,
+        });
 
-          let mailSubject = "Mail Verification";
-          const randomToken = randomstring.generate();
-          let content = `<p> Hii ${req.body.fullName} , <br> Your account is successfully register.</p>`;
-          sendMail(req.body.email, mailSubject, content);
+        let mailSubject = "Mail Verification";
+        const randomToken = randomstring.generate();
+        let content = `<p> Hii ${req.body.fullName} , <br> Your account is successfully register.</p>`;
+        sendMail(req.body.email, mailSubject, content);
 
-          // register.create(
-          //   "Update users set token=? email=?",
-          //   [randomToken, req.body.email],
-          //   (err, result, fields) => {
-          //     if (err) {
-          //       return res.status(400).send({ err: err });
-          //     }
-          //   }
-          // );
+        let users = await createNewuser.save();
 
-          let user = await createNewuser.save();
-          return res.status(200).json({
-            message: "user created successfully",
-            user: user,
-          });
-        } else {
-          res.send({ message: "Password doesn't match" });
-        }
+        return res.status(200).json({
+          message: "user created successfully",
+          user: users,
+        });
       }
     }
   } catch (error) {
@@ -68,7 +54,7 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (email && password) {
-      const user = await register.findOne({
+      const user = await user.findOne({
         where: {
           email: email,
         },

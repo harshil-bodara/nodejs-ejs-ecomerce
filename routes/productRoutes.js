@@ -1,21 +1,21 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getProduct,
-  addProduct,
+  getProducts,
+  addProducts,
   deleteProduct,
-  getOneProduct,
+  getProduct,
   updateProduct,
-  searchProduct
+  searchProduct,
 } = require("../controllers/productController");
 const userAuthMiddleware = require("../middlewares/authMiddleware");
 const uploads = require("../utils/createMulter");
 
-router.get("/product", getProduct);
-router.post("/product/add", uploads, addProduct);
-router.delete("/product/del/:id", deleteProduct);
-router.get("/product/update/:id", getOneProduct);
-router.put("/product/update/:id", updateProduct);
-router.get("/search/:key", searchProduct);
+router.get("/", getProducts);
+router.post("/add", uploads.single("image"), addProducts);
+router.delete("/delete/:id", deleteProduct);
+router.get("/update/:id", getProduct);
+router.put("/update/:id", updateProduct);
+router.get("/:key", searchProduct);
 
 module.exports = router;

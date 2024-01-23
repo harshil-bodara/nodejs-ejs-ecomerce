@@ -1,9 +1,9 @@
 const db = require("../confic/db");
 const { category } = db;
 
-const getCatagory = async (req, res) => {
+const getCatagories = async (req, res) => {
   try {
-    let categories = await category.findAll({ where: {} });
+    let categories = await category.findAll();
     res.status(200).json({ categories: categories });
   } catch (error) {
     return res.status(400).json({
@@ -12,23 +12,22 @@ const getCatagory = async (req, res) => {
   }
 };
 
-const addCatagory = async (req, res) => {
+const addCatagories = async (req, res) => {
   try {
-    const { categoryName } = req.body;
-    const allReadyExistcategory = await category.findOne({
+    const { name } = req.body;
+    const allReadyExistCategory = await category.findOne({
       where: {
-        categoryName: categoryName,
+        name: name,
       },
     });
-
-    if (allReadyExistcategory) {
-      throw new Error("Category Already Exists");
+    if (!name) {
+      throw new Error("All fields are required");
     } else {
-      if (!categoryName) {
-        throw new Error("All fields are required");
+      if (allReadyExistCategory) {
+        throw new Error("Category Already Exists");
       } else {
         const createCategory = await category.create({
-          categoryName: categoryName,
+          name: name,
         });
         let categories = await createCategory.save();
         return res.status(200).json({
@@ -45,18 +44,35 @@ const addCatagory = async (req, res) => {
 };
 
 const deleteCatagory = async (req, res) => {
-  let categories = await category.destroy({
-    where: {
-      id: req.params.id,
-    },
-  });
-  return res.status(200).json({
-    message: "Category delete successfully",
-    categories: categories,
-  });
+  try {
+    const { name } = req.body;
+    const allReadyExistCategory = await category.findAll({
+      where: {
+        name: category.name,
+      },
+    });
+    if (allReadyExistCategory) {
+      let categories = await category.destroy({
+        where: {
+          id: req.params.id,
+        },
+      });
+      return res.status(200).json({
+        message: "Category delete successfully",
+        categories: categories,
+      });
+    } 
+    else {
+      throw new Error("Category not found");
+    }
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
 };
 
-const getOneCatagory = async (req, res) => {
+const getCatagory = async (req, res) => {
   try {
     let categories = await category.findOne({
       where: {
@@ -73,11 +89,11 @@ const getOneCatagory = async (req, res) => {
 
 const updateCatagory = async (req, res) => {
   try {
-    const { categoryName } = req.body;
+    const { name } = req.body;
     let updateCategory = req.body;
     const allReadyExistcategory = await category.findOne({
       where: {
-        categoryName: categoryName,
+        name: name,
       },
     });
 
@@ -102,9 +118,9 @@ const updateCatagory = async (req, res) => {
 };
 
 module.exports = {
-  getCatagory,
-  addCatagory,
+  getCatagories,
+  addCatagories,
   deleteCatagory,
-  getOneCatagory,
+  getCatagory,
   updateCatagory,
 };

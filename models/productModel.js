@@ -3,13 +3,13 @@ const Sequelize = require("sequelize");
 module.exports = (sequelize) => {
   const { DataTypes } = Sequelize;
 
-  const register = sequelize.define("products", {
+  const productScheme = sequelize.define("product", {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    productName: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -25,10 +25,10 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    files: {
+    image: {
       type: DataTypes.STRING,
       allowNull: true,
     }
   });
-  return register;
+  return productScheme;
 };

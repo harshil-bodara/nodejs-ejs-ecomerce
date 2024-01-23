@@ -16,7 +16,7 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.register = require("../models/registerModel.js")(sequelize, DataTypes);
+db.user = require("../models/userModel.js")(sequelize, DataTypes);
 db.category = require("../models/categoryModel.js")(sequelize, DataTypes);
 db.product = require("../models/productModel.js")(sequelize, DataTypes);
 

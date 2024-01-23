@@ -3,15 +3,11 @@ const Sequelize = require("sequelize");
 module.exports = (sequelize) => {
   const { DataTypes } = Sequelize;
 
-  const register = sequelize.define("registerUser", {
+  const user = sequelize.define("user", {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
-    },
-    roll: {
-      type: DataTypes.STRING,
-      allowNull: false,
     },
     fullName: {
       type: DataTypes.STRING,
@@ -27,14 +23,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    cpassword: {
+    profile: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    files: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    }
   });
-  return register;
+  return user;
 };
