@@ -8,6 +8,7 @@ const sendMail = require("../utils/sendMail");
 
 const registerUser = async (req, res) => {
   try {
+    console.log("req.body", req.body);
     const { fullName, email, password, profile } = req.body;
     const allReadyExistUser = await user.findOne({
       where: {
@@ -35,12 +36,8 @@ const registerUser = async (req, res) => {
         let content = `<p> Hii ${req.body.fullName} , <br> Your account is successfully register.</p>`;
         sendMail(req.body.email, mailSubject, content);
 
-        let users = await createNewuser.save();
-
-        return res.status(200).json({
-          message: "user created successfully",
-          user: users,
-        });
+        await createNewuser.save();
+        res.redirect("/login");
       }
     }
   } catch (error) {
@@ -54,25 +51,26 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (email && password) {
-      const user = await user.findOne({
+      const users = await user.findOne({
         where: {
           email: email,
         },
       });
-      if (user) {
-        const IsMatch = await bcrypt.compare(password, user.password);
-        if (user.email === email && IsMatch) {
+      if (users) {
+        const IsMatch = await bcrypt.compare(password, users.password);
+        if (email === users.email && IsMatch) {
           jwt.sign(
-            { user },
+            { email: users.email, password: users.password, id: users.id },
             process.env.jwtKey,
             { expiresIn: "24h" },
             (err, token) => {
               if (err) {
                 res.send({ message: "Something went wrong, please try agin" });
               }
+              res.redirect('/category');
               return res.status(200).json({
                 message: "user login successfully",
-                user: { user, token: token },
+                user: { email, password, id, token: token },
               });
             }
           );
@@ -100,7 +98,6 @@ const changePassword = async (req, res) => {
     } else {
       const salt = await bcrypt.genSalt(10);
       const newHashPassword = await bcrypt.hash(password, salt);
-      // let updatePassword = req.body.password;
       let newPassword = await register.update(newHashPassword, {
         where: {
           id: req.params.id,

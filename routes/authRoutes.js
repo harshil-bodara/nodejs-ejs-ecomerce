@@ -7,8 +7,8 @@ const {
   changePassword,
 } = require("../controllers/authController");
 
-router.post("/register", uploads.single("profile"), registerUser);
 router.post("/login", loginUser);
+router.post("/register", uploads.single("profile"), registerUser);
 router.put("/changePassword", changePassword);
 
 module.exports = router;

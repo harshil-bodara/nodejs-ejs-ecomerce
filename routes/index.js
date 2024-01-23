@@ -13,6 +13,10 @@ router.get("/login", (req, res) => {
   res.render("pages/loginUser", { title: "Login page" });
 });
 
+router.get("/category", (req, res) => {
+  res.render("pages/category", { title: "Category page" });
+});
+
 router.use("/user", authRouter);
 router.use("/category", categoryRouter);
 router.use("/product", productRouter);
