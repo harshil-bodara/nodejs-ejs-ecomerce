@@ -5,10 +5,10 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const randomstring = require("randomstring");
 const sendMail = require("../utils/sendMail");
+const verifyToken = require("../middlewares/authMiddleware");
 
 const registerUser = async (req, res) => {
   try {
-    console.log("req.body", req.body);
     const { fullName, email, password, profile } = req.body;
     const allReadyExistUser = await user.findOne({
       where: {
@@ -67,7 +67,10 @@ const loginUser = async (req, res) => {
               if (err) {
                 res.send({ message: "Something went wrong, please try agin" });
               }
-              res.redirect('/category');
+              res.cookie("token", token, { maxAge: 900000, httpOnly: true });
+
+              res.redirect("/category");
+
               return res.status(200).json({
                 message: "user login successfully",
                 user: { email, password, id, token: token },

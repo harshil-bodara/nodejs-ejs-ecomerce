@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+var cookieParser = require('cookie-parser')
 
 const cors = require("cors");
 require("dotenv").config();
@@ -9,6 +10,7 @@ port = process.env.port;
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 // set template engine
 app.set("view engine", "ejs");

@@ -28,10 +28,11 @@ const addProducts = async (req, res) => {
         image: image,
       });
       let products = await createProduct.save();
-      return res.status(200).json({
-        message: "Product add successfully",
-        products: products,
-      });
+      res.redirect("/product");
+      // return res.status(200).json({
+      //   message: "Product add successfully",
+      //   products: products,
+      // });
     }
   } catch (error) {
     return res.status(400).json({
