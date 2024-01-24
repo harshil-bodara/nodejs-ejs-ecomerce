@@ -3,7 +3,6 @@ const router = express.Router();
 const authRouter = require("./authRoutes");
 const categoryRouter = require("./categoryRoutes");
 const productRouter = require("./productRoutes");
-const users = require("../controllers/authController");
 
 router.get("/register", (req, res) => {
   res.render("pages/registerUser", { title: "Register page" });
@@ -15,6 +14,10 @@ router.get("/login", (req, res) => {
 
 router.get("/category", (req, res) => {
   res.render("pages/category", { title: "Category page" });
+});
+
+router.get("/product", (req, res) => {
+  res.render("pages/product", { title: "Product page" });
 });
 
 router.use("/user", authRouter);
