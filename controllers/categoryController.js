@@ -5,7 +5,9 @@ const { user } = db;
 const getCatagories = async (req, res) => {
   try {
     let categories = await category.findAll();
-    res.render("pages/category",  {category : categories});
+    res.render("pages/category", {
+      category: categories,
+    });
     res.status(200).json({ categories: categories });
   } catch (error) {
     return res.status(400).json({
@@ -16,7 +18,7 @@ const getCatagories = async (req, res) => {
 
 const addCatagories = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name } = req.user;
     const allReadyExistCategory = await category.findOne({
       where: {
         name: name,
@@ -31,7 +33,8 @@ const addCatagories = async (req, res) => {
         const createCategories = await category.create({
           name: name,
         });
-        let categories = await createCategories.save();
+        let categories = await createCategory.save();
+
         res.redirect("/category");
         // return res.status(200).json({
         //   message: "Category add successfully",

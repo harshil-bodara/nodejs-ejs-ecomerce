@@ -15,9 +15,10 @@ const getProducts = async (req, res) => {
 
 const addProducts = async (req, res) => {
   try {
-    const { name, description, category, price, image } = req.body;
+    const { name, description, category, price } = req.body;
+    const { filename } = req.file;
 
-    if (!name && description && category && price && image) {
+    if (!name && description && category && price && filename) {
       throw new Error("All fields are required");
     } else {
       const createProduct = await product.create({
@@ -25,7 +26,7 @@ const addProducts = async (req, res) => {
         description: description,
         category: category,
         price: price,
-        image: image,
+        image: filename,
       });
       let products = await createProduct.save();
       res.redirect("/product");

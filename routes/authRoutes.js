@@ -4,6 +4,7 @@ const uploads = require("../utils/createMulter");
 const {
   registerUser,
   loginUser,
+  logoutUser,
   changePassword,
 } = require("../controllers/authController");
 

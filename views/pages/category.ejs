@@ -10,45 +10,49 @@
       crossorigin="anonymous"
     />
     <title><%= title %></title>
+    <style>
+      li {
+        list-style: none;
+      }
+    </style>
   </head>
   <body>
-    <header><%- include('../commonPages/header.ejs')%></header>
-
-    <div class="w-25 mx-auto text-center mt-5">
-      <h4>Add Category</h4>
+    <%- include('../commonPages/header.ejs') %>
+    <div class="container mx-auto border border-1 w-25 p-4 mt-5 text-center">
+      <h4 class="mb-4">Add Category</h4>
       <form action="/category/add" method="post">
         <input
           type="text"
-          class="mb-3 w-100 p-1"
-          placeholder="Enter your category"
+          class="mb-4 w-100 p-1"
+          placeholder="Enter category"
           name="name"
         />
         <button type="submit" name="submit" class="btn btn-primary">Add</button>
       </form>
     </div>
 
-    <div class="container mt-4">
-      <% if( category !== 'undefined' && category !== "") {%>
+    <div class="container">
       <table class="table">
         <thead>
           <tr>
-            <th>Id</th>
+            <th>No</th>
             <th>Name</th>
+            <th>Action</th>
           </tr>
         </thead>
-
         <tbody>
           <% category.forEach((data, index) => { %>
           <tr>
-            <td><%= index %></td>
-            <td><%= data.name %></td>
+            <td><%=index+1 %></td>
+            <td><%=data.name %></td>
+            <td>
+              <a href="/update/<%= data.id %>" class="btn btn-success">Edit</a>
+              <a href="/delete/<%= data.id %>" class="btn btn-danger">Delete</a>
+            </td>
           </tr>
-          <%})%>
+          <% })%>
         </tbody>
       </table>
-      <%} else {%>
-      <h4>Category not found</h4>
-      <%}%>
     </div>
 
     <script

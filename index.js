@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-var cookieParser = require('cookie-parser')
+var cookieParser = require("cookie-parser");
 
 const cors = require("cors");
 require("dotenv").config();
@@ -15,7 +15,7 @@ app.use(cookieParser());
 // set template engine
 app.set("view engine", "ejs");
 
-// uploads
+//static images folder
 app.use(express.static("upload"));
 
 // route prefix

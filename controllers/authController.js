@@ -9,14 +9,15 @@ const verifyToken = require("../middlewares/authMiddleware");
 
 const registerUser = async (req, res) => {
   try {
-    const { fullName, email, password, profile } = req.body;
+    const { fullName, email, password } = req.body;
+    const { filename } = req.file;
     const allReadyExistUser = await user.findOne({
       where: {
         email: email,
       },
     });
 
-    if (!fullName && !email && !password && !profile) {
+    if (!fullName && !email && !password && !filename) {
       throw new Error("All fields are required");
     } else {
       if (allReadyExistUser) {
@@ -28,7 +29,7 @@ const registerUser = async (req, res) => {
           fullName: fullName,
           email: email,
           password: hashPassword,
-          profile: profile,
+          profile: filename,
         });
 
         let mailSubject = "Mail Verification";
@@ -36,8 +37,8 @@ const registerUser = async (req, res) => {
         let content = `<p> Hii ${req.body.fullName} , <br> Your account is successfully register.</p>`;
         sendMail(req.body.email, mailSubject, content);
 
-        await createNewuser.save();
         res.redirect("/login");
+        return await createNewuser.save();
       }
     }
   } catch (error) {
@@ -45,6 +46,15 @@ const registerUser = async (req, res) => {
       message: error.message,
     });
   }
+};
+
+const isValidUser = async (req, res) => {
+  let user = await user.findOne({
+    where: {
+      id: req.params.id,
+    },
+  });
+  return user;
 };
 
 const loginUser = async (req, res) => {
@@ -116,4 +126,4 @@ const changePassword = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, changePassword };
+module.exports = { registerUser, loginUser, isValidUser, changePassword };
