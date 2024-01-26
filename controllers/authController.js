@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const randomstring = require("randomstring");
 const sendMail = require("../utils/sendMail");
-const verifyToken = require("../middlewares/authMiddleware");
 
 const registerUser = async (req, res) => {
   try {
@@ -36,7 +35,6 @@ const registerUser = async (req, res) => {
         const randomToken = randomstring.generate();
         let content = `<p> Hii ${req.body.fullName} , <br> Your account is successfully register.</p>`;
         sendMail(req.body.email, mailSubject, content);
-
         res.redirect("/login");
         return await createNewuser.save();
       }
@@ -46,15 +44,6 @@ const registerUser = async (req, res) => {
       message: error.message,
     });
   }
-};
-
-const isValidUser = async (req, res) => {
-  let user = await user.findOne({
-    where: {
-      id: req.params.id,
-    },
-  });
-  return user;
 };
 
 const loginUser = async (req, res) => {
@@ -77,10 +66,12 @@ const loginUser = async (req, res) => {
               if (err) {
                 res.send({ message: "Something went wrong, please try agin" });
               }
-              res.cookie("token", token, { maxAge: 900000, httpOnly: true });
-
+              res.cookie("token", token, {
+                httpOnly: true,
+                secure: true,
+                maxAge: 3600000,
+              });
               res.redirect("/category");
-
               return res.status(200).json({
                 message: "user login successfully",
                 user: { email, password, id, token: token },
@@ -126,4 +117,4 @@ const changePassword = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, isValidUser, changePassword };
+module.exports = { registerUser, loginUser, changePassword };

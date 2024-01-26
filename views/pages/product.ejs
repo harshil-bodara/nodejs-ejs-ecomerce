@@ -9,13 +9,19 @@
       integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
       crossorigin="anonymous"
     />
+    <style>
+      li {
+        list-style: none;
+        cursor: pointer;
+      }
+    </style>
     <title><%= title %></title>
   </head>
   <body>
     <header><%- include('../commonPages/header.ejs')%></header>
 
     <div class="container mx-auto border border-1 w-25 p-4 mt-5">
-      <h1 class="text-center">Add Product</h1>
+      <h4 class="text-center">Add Product</h4>
       <form action="/product/add" method="post" enctype="multipart/form-data">
         <input
           type="text"
@@ -30,7 +36,7 @@
           name="description"
         />
 
-        <!-- <li class="nav-item dropdown mb-4 mt-3">
+        <li class="nav-item dropdown mb-4 mt-3">
           <a
             class="nav-link dropdown-toggle"
             href="#"
@@ -38,13 +44,16 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            Role
+            Category
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Admin</a></li>
-            <li><a class="dropdown-item" href="#">Seller</a></li>
+            <% category.forEach((data, index) => { %>
+              <ul>
+                <li><%=data.name %></li>
+              </ul>
+              <% })%>
           </ul>
-        </li> -->
+        </li>
 
         <input
           type="text"

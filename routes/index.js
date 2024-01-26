@@ -6,10 +6,8 @@ const productRouter = require("./productRoutes");
 const db = require("../confic/db");
 const { category } = db;
 const { product } = db;
-const userAuthMiddleware = require("../middlewares/authMiddleware");
+const { isValidUser } = require("../controllers/authController");
 
-// if (!userAuthMiddleware) {
-// ejs Routes
 router.get("/register", (req, res) => {
   res.render("pages/registerUser", { title: "Register page" });
 });
@@ -17,13 +15,13 @@ router.get("/register", (req, res) => {
 router.get("/login", (req, res) => {
   res.render("pages/loginUser", { title: "Login page" });
 });
-// } else{
-// Category routes
+
 router.get("/category", async (req, res) => {
   let categories = await category.findAll();
   res.render("pages/category", {
     title: "Category page",
     category: categories,
+    token: req.cookies,
   });
 });
 
@@ -60,10 +58,13 @@ router.put("/update/:id", async (req, res) => {
 // Product routes
 router.get("/product", async (req, res) => {
   let products = await product.findAll();
-  res.render("pages/product", { title: "Product page", product: products });
+  let categories = await category.findAll();
+  res.render("pages/product", {
+    title: "Product page",
+    product: products,
+    category: categories,
+  });
 });
-
-// }
 
 router.use("/user", authRouter);
 router.use("/category", categoryRouter);

@@ -17,7 +17,6 @@ const addProducts = async (req, res) => {
   try {
     const { name, description, category, price } = req.body;
     const { filename } = req.file;
-
     if (!name && description && category && price && filename) {
       throw new Error("All fields are required");
     } else {

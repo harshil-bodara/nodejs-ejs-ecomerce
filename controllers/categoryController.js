@@ -1,6 +1,5 @@
 const db = require("../confic/db");
 const { category } = db;
-const { user } = db;
 
 const getCatagories = async (req, res) => {
   try {
@@ -18,7 +17,7 @@ const getCatagories = async (req, res) => {
 
 const addCatagories = async (req, res) => {
   try {
-    const { name } = req.user;
+    const { name } = req.body;
     const allReadyExistCategory = await category.findOne({
       where: {
         name: name,
@@ -33,7 +32,7 @@ const addCatagories = async (req, res) => {
         const createCategories = await category.create({
           name: name,
         });
-        let categories = await createCategory.save();
+        let categories = await createCategories.save();
 
         res.redirect("/category");
         // return res.status(200).json({
