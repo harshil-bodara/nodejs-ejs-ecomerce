@@ -4,11 +4,16 @@ const uploads = require("../utils/createMulter");
 const {
   registerUser,
   loginUser,
+<<<<<<< Updated upstream
   changePassword,
+=======
+  resetPassword,
+>>>>>>> Stashed changes
 } = require("../controllers/authController");
+const {userAuthMiddleware} = require("../middlewares/authMiddleware");
 
 router.post("/login", loginUser);
 router.post("/register", uploads.single("profile"), registerUser);
-router.put("/changePassword", changePassword);
+router.post("/resetPassword",userAuthMiddleware, resetPassword);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+<<<<<<< Updated upstream
 const db = require("../confic/db");
 const { user } = db;
 
@@ -54,11 +55,15 @@ const { user } = db;
 //     });
 //   }
 // };
+=======
+>>>>>>> Stashed changes
 
 const userAuthMiddleware = async (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
     return res.redirect("/login");
+<<<<<<< Updated upstream
+=======
   }
 
   jwt.verify(token, process.env.jwtKey, (err, user) => {
@@ -70,4 +75,31 @@ const userAuthMiddleware = async (req, res, next) => {
   });
 };
 
-module.exports = userAuthMiddleware;
+const checkAuth = (req, res, next) => {
+  const isAuthenticated = req.cookies.isAuthenticated === "true";
+  if (isAuthenticated) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+};
+
+const loginAuth = (req, res, next) => {
+  const isAuthenticated = req.cookies.isAuthenticated === "false";
+  if (isAuthenticated) {
+    next();
+  } else {
+    res.redirect("/category");
+>>>>>>> Stashed changes
+  }
+
+  jwt.verify(token, process.env.jwtKey, (err, user) => {
+    if (err) {
+      return res.redirect("/login");
+    }
+    req.user = user;
+    next();
+  });
+};
+
+module.exports = { userAuthMiddleware, checkAuth, loginAuth };

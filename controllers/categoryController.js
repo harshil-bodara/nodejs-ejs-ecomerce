@@ -1,13 +1,19 @@
 const db = require("../confic/db");
-const { category } = db;
+const { category, user } = db;
+const { checkAuth } = require("../middlewares/authMiddleware");
 
 const getCatagories = async (req, res) => {
   try {
-    let categories = await category.findAll();
-    res.render("pages/category", {
-      category: categories,
+    const { id } = req.user;
+    let categories = await category.findAll({
+      where: { userId: id },
     });
-    res.status(200).json({ categories: categories });
+    res.render("pages/category", {
+      title: "Category page",
+      category: categories,
+      token: req.cookies,
+      authRoute: checkAuth,
+    });
   } catch (error) {
     return res.status(400).json({
       message: error.message,
@@ -23,23 +29,21 @@ const addCatagories = async (req, res) => {
         name: name,
       },
     });
+
     if (!name) {
       throw new Error("All fields are required");
     } else {
-      if (allReadyExistCategory) {
-        throw new Error("Category Already Exists");
-      } else {
+      // if (allReadyExistCategory) {
+      //   throw new Error("Category Already Exists");
+      // } else {
+        const { id } = req.user;
         const createCategories = await category.create({
           name: name,
+          userId: id,
         });
-        let categories = await createCategories.save();
-
+        await createCategories.save();
         res.redirect("/category");
-        // return res.status(200).json({
-        //   message: "Category add successfully",
-        //   categories: categories,
-        // });
-      }
+      // }
     }
   } catch (error) {
     return res.status(400).json({
@@ -50,7 +54,6 @@ const addCatagories = async (req, res) => {
 
 const deleteCatagory = async (req, res) => {
   try {
-    const { name } = req.body;
     const allReadyExistCategory = await category.findAll({
       where: {
         name: category.name,
@@ -64,7 +67,7 @@ const deleteCatagory = async (req, res) => {
       });
       return res.status(200).json({
         message: "Category delete successfully",
-        categories: categories,
+        category: categories,
       });
     } else {
       throw new Error("Category not found");
@@ -83,8 +86,17 @@ const getCatagory = async (req, res) => {
         id: req.params.id,
       },
     });
-    res.status(200).json({ categories: categories });
+    if (categories == null) {
+      res.redirect("/category");
+    } else {
+      res.render("pages/updateCategory", {
+        title: "Edit category",
+        category: categories,
+        authRoute: checkAuth,
+      });
+    }
   } catch (error) {
+    res.redirect("/login");
     return res.status(400).json({
       message: error.message,
     });
@@ -109,10 +121,10 @@ const updateCatagory = async (req, res) => {
           id: req.params.id,
         },
       });
-      return res.status(200).json({
-        message: "Category update successfully",
-        categories: categories,
+      res.render("pages/category", {
+        category: categories,
       });
+      res.redirect("/category");
     }
   } catch (error) {
     return res.status(400).json({

@@ -1,5 +1,5 @@
 const db = require("../confic/db");
-const { user } = db;
+const { user, category } = db;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -71,6 +71,7 @@ const loginUser = async (req, res) => {
                 secure: true,
                 maxAge: 3600000,
               });
+              res.cookie("isAuthenticated", "true");
               res.redirect("/category");
               return res.status(200).json({
                 message: "user login successfully",
@@ -94,7 +95,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-const changePassword = async (req, res) => {
+const resetPassword = async (req, res) => {
   const { password, cpassword } = req.body;
   if (password && cpassword) {
     if (password !== cpassword) {
@@ -102,14 +103,14 @@ const changePassword = async (req, res) => {
     } else {
       const salt = await bcrypt.genSalt(10);
       const newHashPassword = await bcrypt.hash(password, salt);
-      let newPassword = await register.update(newHashPassword, {
+      let newPassword = await user.update(newHashPassword, {
         where: {
           id: req.params.id,
         },
       });
-      return res.status(200).json({
-        message: "Password change succesfully",
-        newPassword: newPassword,
+      res.render("pages/resetPassword", {
+        title: "Reset password",
+        password: newPassword,
       });
     }
   } else {
@@ -117,4 +118,4 @@ const changePassword = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, changePassword };
+module.exports = { registerUser, loginUser, resetPassword };

@@ -1,11 +1,26 @@
 const db = require("../confic/db");
-const { product } = db;
+const { product, category, user } = db;
 const Sequelize = require("sequelize");
+const fs = require("fs");
+const { checkAuth } = require("../middlewares/authMiddleware");
 
 const getProducts = async (req, res) => {
   try {
-    let products = await product.findAll();
-    res.status(200).json({ products: products });
+    const { id } = req.user;
+    let categories = await category.findAll({
+      where: { userId: id },
+    });
+
+    let products = await product.findAll({
+      // where: { categoryId: req.category.id }
+    });
+
+    res.render("pages/product", {
+      title: "Product page",
+      product: products,
+      category: categories,
+      authRoute: checkAuth,
+    });
   } catch (error) {
     return res.status(400).json({
       message: error.message,
@@ -26,13 +41,10 @@ const addProducts = async (req, res) => {
         category: category,
         price: price,
         image: filename,
+        categoryId: category,
       });
       let products = await createProduct.save();
       res.redirect("/product");
-      // return res.status(200).json({
-      //   message: "Product add successfully",
-      //   products: products,
-      // });
     }
   } catch (error) {
     return res.status(400).json({
@@ -43,7 +55,6 @@ const addProducts = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
   try {
-    const { name } = req.body;
     let allReadyExistProduct = product.findAll({
       where: {
         name: product.name,
@@ -57,7 +68,7 @@ const deleteProduct = async (req, res) => {
       });
       return res.status(200).json({
         message: "Product delete successfully",
-        products: products,
+        product: products,
       });
     } else {
       throw new Error("Product not found");
@@ -76,7 +87,21 @@ const getProduct = async (req, res) => {
         id: req.params.id,
       },
     });
-    res.status(200).json({ products: products });
+    const { id } = req.user;
+    let categories = await category.findAll({
+      where: { userId: id },
+    });
+
+    if (products == null) {
+      res.redirect("/product");
+    } else {
+      res.render("pages/updateProduct", {
+        title: "Edit Product",
+        product: products,
+        category: categories,
+        authRoute: checkAuth,
+      });
+    }
   } catch (error) {
     return res.status(400).json({
       message: error.message,
@@ -87,15 +112,31 @@ const getProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     let updateProduct = req.body;
-    let products = await product.update(updateProduct, {
-      where: {
-        id: req.params.id,
-      },
+    let newImage = "";
+    if (req.file) {
+      newImage = req.file.filename;
+      try {
+        fs.unlinkSync("../upload" + req.body.oldImage);
+      } catch (error) {
+        return res.status(400).json({
+          message: error.message,
+        });
+      }
+    } else {
+      newImage = req.body.oldImage;
+    }
+    let products = await product.update(
+      { updateProduct },
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    );
+    res.render("pages/product", {
+      product: products,
     });
-    return res.status(200).json({
-      message: "Product update successfully",
-      products: products,
-    });
+    res.redirect("/product");
   } catch (error) {
     return res.status(400).json({
       message: error.message,

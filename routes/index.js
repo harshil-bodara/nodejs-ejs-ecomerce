@@ -3,67 +3,36 @@ const router = express.Router();
 const authRouter = require("./authRoutes");
 const categoryRouter = require("./categoryRoutes");
 const productRouter = require("./productRoutes");
-const db = require("../confic/db");
-const { category } = db;
-const { product } = db;
-const { isValidUser } = require("../controllers/authController");
+const { checkAuth, loginAuth } = require("../middlewares/authMiddleware");
 
-router.get("/register", (req, res) => {
-  res.render("pages/registerUser", { title: "Register page" });
-});
-
-router.get("/login", (req, res) => {
-  res.render("pages/loginUser", { title: "Login page" });
-});
-
-router.get("/category", async (req, res) => {
-  let categories = await category.findAll();
-  res.render("pages/category", {
-    title: "Category page",
-    category: categories,
-    token: req.cookies,
+// Public route
+router.get("/register", loginAuth, (req, res) => {
+  res.render("pages/registerUser", {
+    title: "Register page",
+    publicRoute: loginAuth,
   });
 });
 
-router.get("/update/:id", async (req, res) => {
-  let categories = await category.findOne({
-    where: {
-      id: req.params.id,
-    },
-  });
-  if (categories == null) {
-    res.redirect("/category");
-  } else {
-    res.render("pages/updateCategory", {
-      title: "Edit category",
-      category: categories,
-    });
-  }
-});
-
-router.put("/update/:id", async (req, res) => {
-  let updateCategory = req.body;
-  let categories = await category.update(updateCategory, {
-    where: {
-      id: req.params.id,
-    },
-  });
-  res.redirect("/category");
-  res.render("pages/updateCategory", {
-    title: "Edit category",
-    category: categories,
+router.get("/login", loginAuth, (req, res) => {
+  res.render("pages/loginUser", {
+    title: "Login page",
+    publicRoute: loginAuth,
   });
 });
 
-// Product routes
-router.get("/product", async (req, res) => {
-  let products = await product.findAll();
-  let categories = await category.findAll();
-  res.render("pages/product", {
-    title: "Product page",
-    product: products,
-    category: categories,
+
+// Private route
+router.get("/resetPassword", checkAuth, async (req, res) => {
+  res.render("pages/resetPassword", {
+    title: "Reset password",
+    authRoute: checkAuth,
   });
+});
+
+router.get("/logout", (req, res) => {
+  res.clearCookie("token");
+  res.cookie("isAuthenticated", "false");
+  res.redirect("/login");
 });
 
 router.use("/user", authRouter);

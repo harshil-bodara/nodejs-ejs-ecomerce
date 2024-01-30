@@ -18,16 +18,45 @@
   </head>
   <body>
     <%- include('../commonPages/header.ejs') %>
-    <div class="container mx-auto border border-1 w-25 p-4 mt-5 text-center">
-      <h4 class="mb-4">Add Category</h4>
-      <form action="/category/update/<%=category.id %>" method="post">
+    <div class="container mx-auto border border-1 w-25 p-4 mt-5 ">
+      <h4 class="mb-4">Update Product</h4>
+      <form action="/product/update/<%=product.id %>" method="post">
+        <input
+          type="text"
+          class="mb-4 mt-4 w-100 p-1"
+          placeholder="Enter product name"
+          name="name"
+          value="<%= product.name %>"
+        />
+        <input
+          type="text"
+          class="mb-4 w-100 p-1"
+          placeholder="Enter description"
+          name="description"
+          value="<%= product.description %>"
+        />
+
         <input
           type="text"
           class="mb-4 w-100 p-1"
           placeholder="Enter category"
-          name="name"
-          value="<%= category.name %>"
+          name="category"
+          value="<%= product.category %>"
         />
+
+        <input
+          type="number"
+          class="mb-4 w-100 p-1"
+          placeholder="Enter price"
+          name="price"
+          value="<%= product.price %>"
+        />
+
+        <input type="file" class="mb-2" class="mb-2" name="image" /><br><br>
+        <img src="/<%= product.image %>" width="50">
+        <br><br>
+        <input type="hidden" class="mb-2" name="oldImage" value="<%= product.image %>" />
+
         <button type="submit" name="submit" class="btn btn-success">
           Update
         </button>
