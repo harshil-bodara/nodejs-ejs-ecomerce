@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const adminRouter = require("./adminRoutes");
 const authRouter = require("./authRoutes");
 const categoryRouter = require("./categoryRoutes");
 const productRouter = require("./productRoutes");
@@ -20,7 +21,6 @@ router.get("/login", loginAuth, (req, res) => {
   });
 });
 
-
 // Private route
 router.get("/resetPassword", checkAuth, async (req, res) => {
   res.render("pages/resetPassword", {
@@ -35,6 +35,7 @@ router.get("/logout", (req, res) => {
   res.redirect("/login");
 });
 
+router.use("/admin", adminRouter);
 router.use("/user", authRouter);
 router.use("/category", categoryRouter);
 router.use("/product", productRouter);

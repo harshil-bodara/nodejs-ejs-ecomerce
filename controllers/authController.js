@@ -8,15 +8,14 @@ const sendMail = require("../utils/sendMail");
 
 const registerUser = async (req, res) => {
   try {
-    const { fullName, email, password } = req.body;
+    const { role, fullName, email, password } = req.body;
     const { filename } = req.file;
     const allReadyExistUser = await user.findOne({
       where: {
         email: email,
       },
     });
-
-    if (!fullName && !email && !password && !filename) {
+    if ((!role, !fullName && !email && !password && !filename)) {
       throw new Error("All fields are required");
     } else {
       if (allReadyExistUser) {
@@ -25,6 +24,7 @@ const registerUser = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashPassword = await bcrypt.hash(password, salt);
         const createNewuser = await user.create({
+          role: role,
           fullName: fullName,
           email: email,
           password: hashPassword,
@@ -46,9 +46,24 @@ const registerUser = async (req, res) => {
   }
 };
 
+// for admin
+const getAllUser = async (req, res) => {
+  try {
+    let users = await user.findAll({});
+    res.render("admin/adminUser", {
+      title: "Admin User",
+      user: users,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
 const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
     if (email && password) {
       const users = await user.findOne({
         where: {
@@ -72,7 +87,14 @@ const loginUser = async (req, res) => {
                 maxAge: 3600000,
               });
               res.cookie("isAuthenticated", "true");
-              res.redirect("/category");
+
+              if (users.role === "admin") {
+                res.redirect("/admin/user");
+              } else if (users.role === "user") {
+                res.redirect("/category");
+              } else {
+                res.redirect("/login");
+              }
               return res.status(200).json({
                 message: "user login successfully",
                 user: { email, password, id, token: token },
@@ -96,6 +118,7 @@ const loginUser = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
+  const { id } = req.user;
   const { password, cpassword } = req.body;
   if (password && cpassword) {
     if (password !== cpassword) {
@@ -105,12 +128,13 @@ const resetPassword = async (req, res) => {
       const newHashPassword = await bcrypt.hash(password, salt);
       let newPassword = await user.update(newHashPassword, {
         where: {
-          id: req.params.id,
+          id: id,
         },
       });
-      res.render("pages/resetPassword", {
-        title: "Reset password",
-        password: newPassword,
+      
+      res.status(200).json({
+        message: "Reset password successfully",
+        resetPassword: newPassword,
       });
     }
   } else {
@@ -118,4 +142,4 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, resetPassword };
+module.exports = { registerUser, loginUser, getAllUser, resetPassword };

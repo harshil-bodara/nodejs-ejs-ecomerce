@@ -31,14 +31,15 @@ const loginAuth = (req, res, next) => {
   } else {
     res.redirect("/category");
   }
-
-  jwt.verify(token, process.env.jwtKey, (err, user) => {
-    if (err) {
-      return res.redirect("/login");
-    }
-    req.user = user;
-    next();
-  });
 };
 
-module.exports = { userAuthMiddleware, checkAuth, loginAuth };
+const adminAuth = (req, res, next) => {
+  const isAuthenticated = req.cookies.isAuthenticated === "false";
+  if (isAuthenticated) {
+    next();
+  } else {
+    res.redirect("/admin/user");
+  }
+};
+
+module.exports = { userAuthMiddleware, checkAuth, loginAuth, adminAuth };

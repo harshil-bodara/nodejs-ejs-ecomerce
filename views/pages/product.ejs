@@ -30,11 +30,25 @@
           placeholder="Enter product name"
           name="name"
         />
+
         <input
           type="text"
           class="mb-4 w-100 p-1"
           placeholder="Enter description"
           name="description"
+        />
+        
+        <!-- <textarea
+          class="mb-3 w-100"
+          placeholder="Enter description"
+          name="description"
+        ></textarea> -->
+
+        <input
+          type="number"
+          class="mb-4 w-100 p-1"
+          placeholder="Enter price"
+          name="price"
         />
 
         <select name="category" class="mb-4 p-2">
@@ -46,14 +60,7 @@
           <% })%>
         </select>
 
-        <input
-          type="number"
-          class="mb-4 w-100 p-1"
-          placeholder="Enter price"
-          name="price"
-        />
-
-        <input type="file" class="mb-2" name="image" />
+        <input type="file"  name="image" />
         <br /><br />
         <button type="submit" name="submit" class="btn btn-primary">Add</button>
       </form>
@@ -67,11 +74,12 @@
             <th>Image</th>
             <th>Name</th>
             <th>Description</th>
-            <th>Category</th>
             <th>Price</th>
+            <th>Category</th>
             <th>Action</th>
           </tr>
         </thead>
+
         <tbody>
           <% product.forEach((data, index)=> { %>
           <tr>
@@ -79,8 +87,8 @@
             <td><img src="/<%=data.image %>" width="50px" alt="" /></td>
             <td><%=data.name %></td>
             <td><%=data.description %></td>
-            <td><%=data.category %></td>
             <td><%=data.price %></td>
+            <td><%=data.categories.name %></td>
             <td>
               <a href="/product/edit/<%= data.id %>" class="btn btn-success"
                 >Edit</a

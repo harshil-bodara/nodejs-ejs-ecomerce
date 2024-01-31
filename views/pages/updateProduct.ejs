@@ -18,7 +18,7 @@
   </head>
   <body>
     <%- include('../commonPages/header.ejs') %>
-    <div class="container mx-auto border border-1 w-25 p-4 mt-5 ">
+    <div class="container mx-auto border border-1 w-25 p-4 mt-5">
       <h4 class="mb-4">Update Product</h4>
       <form action="/product/update/<%=product.id %>" method="post">
         <input
@@ -28,6 +28,7 @@
           name="name"
           value="<%= product.name %>"
         />
+
         <input
           type="text"
           class="mb-4 w-100 p-1"
@@ -35,14 +36,11 @@
           name="description"
           value="<%= product.description %>"
         />
-
-        <input
-          type="text"
-          class="mb-4 w-100 p-1"
-          placeholder="Enter category"
-          name="category"
-          value="<%= product.category %>"
-        />
+        <!-- <textarea
+          class="mb-3 w-100"
+          placeholder="Enter description"
+          name="description"
+        ><%= product.description %></textarea> -->
 
         <input
           type="number"
@@ -52,10 +50,23 @@
           value="<%= product.price %>"
         />
 
-        <input type="file" class="mb-2" class="mb-2" name="image" /><br><br>
-        <img src="/<%= product.image %>" width="50">
-        <br><br>
-        <input type="hidden" class="mb-2" name="oldImage" value="<%= product.image %>" />
+        <!-- <input
+          type="text"
+          class="mb-4 w-100 p-1"
+          placeholder="Enter category"
+          name="category"
+          value="<%= product.category %>"
+        /> -->
+
+        <input type="file" class="mb-2" class="mb-2" name="image" /><br /><br />
+        <img src="/<%= product.image %>" width="50" />
+        <br /><br />
+        <input
+          type="hidden"
+          class="mb-2"
+          name="oldImage"
+          value="<%= product.image %>"
+        />
 
         <button type="submit" name="submit" class="btn btn-success">
           Update
@@ -63,7 +74,6 @@
       </form>
     </div>
 
-    
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"

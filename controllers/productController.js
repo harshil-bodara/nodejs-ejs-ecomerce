@@ -4,22 +4,41 @@ const Sequelize = require("sequelize");
 const fs = require("fs");
 const { checkAuth } = require("../middlewares/authMiddleware");
 
+// for user
 const getProducts = async (req, res) => {
   try {
     const { id } = req.user;
     let categories = await category.findAll({
       where: { userId: id },
     });
-
     let products = await product.findAll({
-      // where: { categoryId: req.category.id }
+      include: [
+        {
+          model: category,
+          as: "categories",
+        },
+      ],
     });
-
     res.render("pages/product", {
       title: "Product page",
       product: products,
       category: categories,
       authRoute: checkAuth,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
+// for admin
+const getAllProducts = async (req, res) => {
+  try {
+    let products = await product.findAll({});
+    res.render("admin/adminProduct", {
+      title: "Product page",
+      product: products,
     });
   } catch (error) {
     return res.status(400).json({
@@ -125,14 +144,12 @@ const updateProduct = async (req, res) => {
     } else {
       newImage = req.body.oldImage;
     }
-    let products = await product.update(
-      { updateProduct },
-      {
-        where: {
-          id: req.params.id,
-        },
-      }
-    );
+
+    let products = await product.update(updateProduct, {
+      where: {
+        id: req.params.id,
+      },
+    });
     res.render("pages/product", {
       product: products,
     });
@@ -163,6 +180,7 @@ const searchProduct = async (req, res) => {
 
 module.exports = {
   getProducts,
+  getAllProducts,
   addProducts,
   deleteProduct,
   getProduct,

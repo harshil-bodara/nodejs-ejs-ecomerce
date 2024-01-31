@@ -2,6 +2,7 @@ const db = require("../confic/db");
 const { category, user } = db;
 const { checkAuth } = require("../middlewares/authMiddleware");
 
+// for user
 const getCatagories = async (req, res) => {
   try {
     const { id } = req.user;
@@ -13,6 +14,21 @@ const getCatagories = async (req, res) => {
       category: categories,
       token: req.cookies,
       authRoute: checkAuth,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
+// for admin
+const getAllCatagories = async (req, res) => {
+  try {
+    let categories = await category.findAll({});
+    res.render("admin/adminCategory", {
+      title: "Admin Category",
+      category: categories,
     });
   } catch (error) {
     return res.status(400).json({
@@ -36,13 +52,13 @@ const addCatagories = async (req, res) => {
       // if (allReadyExistCategory) {
       //   throw new Error("Category Already Exists");
       // } else {
-        const { id } = req.user;
-        const createCategories = await category.create({
-          name: name,
-          userId: id,
-        });
-        await createCategories.save();
-        res.redirect("/category");
+      const { id } = req.user;
+      const createCategories = await category.create({
+        name: name,
+        userId: id,
+      });
+      await createCategories.save();
+      res.redirect("/category");
       // }
     }
   } catch (error) {
@@ -135,6 +151,7 @@ const updateCatagory = async (req, res) => {
 
 module.exports = {
   getCatagories,
+  getAllCatagories,
   addCatagories,
   deleteCatagory,
   getCatagory,

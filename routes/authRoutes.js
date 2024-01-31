@@ -4,9 +4,9 @@ const uploads = require("../utils/createMulter");
 const {
   registerUser,
   loginUser,
-  resetPassword,
+  resetPassword
 } = require("../controllers/authController");
-const { userAuthMiddleware } = require("../middlewares/authMiddleware");
+const {userAuthMiddleware} = require("../middlewares/authMiddleware");
 
 router.post("/login", loginUser);
 router.post("/register", uploads.single("profile"), registerUser);

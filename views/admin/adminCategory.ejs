@@ -14,34 +14,27 @@
       li {
         list-style: none;
       }
-      a {
-        text-decoration: none;
-      }
     </style>
   </head>
   <body>
-    <div class="container mx-auto border border-1 w-25 p-4 mt-5">
-      <h1 class="text-center">Login Page</h1>
-
-      <form action="/user/login" method="post">
-        <input
-          type="email"
-          class="mb-4 mt-4 w-100 p-1"
-          placeholder="Enter your email"
-          name="email"
-        />
-        <input
-          type="password"
-          class="mb-4 w-100 p-1"
-          placeholder="Enter your password"
-          name="password"
-        />
-        <!-- <a href="/forgotPassword">Forget password</a> <br /><br /> -->
-        <button type="submit" name="submit" class="btn btn-primary">
-          Login
-        </button><br /><br />
-        <a href="/register">Sing up</a>
-      </form>
+    <%- include('../commonPages/adminHeader.ejs') %>
+    
+    <div class="container w-25 mt-4">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% category.forEach((data, index) => { %>
+          <tr>
+            <td><%=index+1 %></td>
+            <td><%=data.name %></td>
+          <% })%>
+        </tbody>
+      </table>
     </div>
 
     <script
