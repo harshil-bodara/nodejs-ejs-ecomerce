@@ -30,11 +30,6 @@ const registerUser = async (req, res) => {
           password: hashPassword,
           profile: filename,
         });
-
-        let mailSubject = "Mail Verification";
-        const randomToken = randomstring.generate();
-        let content = `<p> Hii ${req.body.fullName} , <br> Your account is successfully register.</p>`;
-        sendMail(req.body.email, mailSubject, content);
         res.redirect("/login");
         return await createNewuser.save();
       }
@@ -118,28 +113,89 @@ const loginUser = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-  const { id } = req.user;
-  const { password, cpassword } = req.body;
-  if (password && cpassword) {
-    if (password !== cpassword) {
-      res.send({ message: "Password doesn't match" });
+  try {
+    const { password, cpassword ,email } = req.body;
+    const userData = await user.findOne({ email: email });
+    const {id} = userData
+    if (password && cpassword) {
+      if (password !== cpassword) {
+        res.send({ message: "Password doesn't match" });
+      } else {
+        const salt = await bcrypt.genSalt(10);
+        const newHashPassword = await bcrypt.hash(password, salt);
+        let newPassword = await user.update({password: newHashPassword}, {
+          where: {
+            id: id,
+          },
+        });
+        
+      }
     } else {
-      const salt = await bcrypt.genSalt(10);
-      const newHashPassword = await bcrypt.hash(password, salt);
-      let newPassword = await user.update(newHashPassword, {
-        where: {
-          id: id,
-        },
-      });
-      
-      res.status(200).json({
-        message: "Reset password successfully",
-        resetPassword: newPassword,
-      });
+      res.send({ message: "All fields are required" });
     }
-  } else {
-    res.send({ message: "All fields are required" });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
   }
 };
 
-module.exports = { registerUser, loginUser, getAllUser, resetPassword };
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  const userData = await user.findOne({ email: email });
+  if (userData) {
+    
+    const randomToken = randomstring.generate();
+    let users = await user.update(
+      { token: randomToken },
+      {
+        where: {
+          email: email,
+        },
+      }
+    );
+    sendMail(userData.fullName, userData.email, randomToken)
+    res.redirect("/login");
+    // res.status(200).send({
+    //   message: "Please check your inbox of mail and reset your password",
+    // });
+  } else {
+    res.status(200).send({ message: "This email does not exist" });
+  }
+};
+
+const changePassword = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const { password, cpassword } = req.body;
+    if (password && cpassword) {
+      if (password !== cpassword) {
+        res.send({ message: "Password doesn't match" });
+      } else {
+        const salt = await bcrypt.genSalt(10);
+        const newHashPassword = await bcrypt.hash(password, salt);
+        let newPassword = await user.update({password: newHashPassword}, {
+          where: {
+            id: id,
+          },
+        });
+        res.redirect("/changePassword");
+      }
+    } else {
+      res.send({ message: "All fields are required" });
+    }
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  getAllUser,
+  resetPassword,
+  forgotPassword,
+  changePassword
+};

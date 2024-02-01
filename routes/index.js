@@ -4,35 +4,50 @@ const adminRouter = require("./adminRoutes");
 const authRouter = require("./authRoutes");
 const categoryRouter = require("./categoryRoutes");
 const productRouter = require("./productRoutes");
-const { checkAuth, loginAuth } = require("../middlewares/authMiddleware");
+const { privateAuth, publicAuth } = require("../middlewares/authMiddleware");
 
 // Public route
-router.get("/register", loginAuth, (req, res) => {
+router.get("/register", publicAuth, (req, res) => {
   res.render("pages/registerUser", {
     title: "Register page",
-    publicRoute: loginAuth,
+    publicRoute: publicAuth,
   });
 });
 
-router.get("/login", loginAuth, (req, res) => {
+router.get("/login", publicAuth, (req, res) => {
   res.render("pages/loginUser", {
     title: "Login page",
-    publicRoute: loginAuth,
+    publicRoute: publicAuth,
+  });
+});
+
+router.get("/forgotPassword", publicAuth, async (req, res) => {
+  res.render("pages/forgotPassword", {
+    title: "Reset password",
+    authRoute: publicAuth,
+  });
+});
+
+router.get("/resetPassword", publicAuth, async (req, res) => {
+  res.render("pages/resetPassword", {
+    title: "Reset password",
+    authRoute: publicAuth,
   });
 });
 
 // Private route
-router.get("/resetPassword", checkAuth, async (req, res) => {
-  res.render("pages/resetPassword", {
-    title: "Reset password",
-    authRoute: checkAuth,
-  });
-});
 
 router.get("/logout", (req, res) => {
   res.clearCookie("token");
   res.cookie("isAuthenticated", "false");
   res.redirect("/login");
+});
+
+router.get("/changePassword", privateAuth, async (req, res) => {
+  res.render("pages/changePassword", {
+    title: "change password",
+    authRoute: privateAuth,
+  });
 });
 
 router.use("/admin", adminRouter);

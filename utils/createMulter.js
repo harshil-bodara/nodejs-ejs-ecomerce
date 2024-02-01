@@ -7,7 +7,7 @@ try {
         cb(null, "upload/");
       },
       filename: (req, file, cb) => {
-        cb(null, new Date().valueOf() + "_" + file.originalname);
+        cb(null, `${file.fieldname}_${Date.now()}_${file.originalname}`);
       },
     }),
   });

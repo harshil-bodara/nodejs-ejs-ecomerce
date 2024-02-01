@@ -15,7 +15,7 @@ const userAuthMiddleware = async (req, res, next) => {
   });
 };
 
-const checkAuth = (req, res, next) => {
+const privateAuth = (req, res, next) => {
   const isAuthenticated = req.cookies.isAuthenticated === "true";
   if (isAuthenticated) {
     next();
@@ -24,7 +24,7 @@ const checkAuth = (req, res, next) => {
   }
 };
 
-const loginAuth = (req, res, next) => {
+const publicAuth = (req, res, next) => {
   const isAuthenticated = req.cookies.isAuthenticated === "false";
   if (isAuthenticated) {
     next();
@@ -33,13 +33,4 @@ const loginAuth = (req, res, next) => {
   }
 };
 
-const adminAuth = (req, res, next) => {
-  const isAuthenticated = req.cookies.isAuthenticated === "false";
-  if (isAuthenticated) {
-    next();
-  } else {
-    res.redirect("/admin/user");
-  }
-};
-
-module.exports = { userAuthMiddleware, checkAuth, loginAuth, adminAuth };
+module.exports = { userAuthMiddleware, privateAuth, publicAuth };

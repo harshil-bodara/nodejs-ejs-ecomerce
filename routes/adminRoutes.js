@@ -4,14 +4,10 @@ const { getAllCatagories } = require("../controllers/categoryController");
 const { getAllProducts } = require("../controllers/productController");
 const { getAllUser } = require("../controllers/authController");
 
-const {
-  userAuthMiddleware,
-  checkAuth,
-  adminAuth,
-} = require("../middlewares/authMiddleware");
+const { privateAuth } = require("../middlewares/authMiddleware");
 
-router.get("/user", checkAuth, getAllUser);
-router.get("/category", checkAuth, getAllCatagories);
-router.get("/product", checkAuth, getAllProducts);
+router.get("/user", privateAuth, getAllUser);
+router.get("/category", privateAuth, getAllCatagories);
+router.get("/product", privateAuth, getAllProducts);
 
 module.exports = router;

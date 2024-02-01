@@ -1,6 +1,6 @@
 const db = require("../confic/db");
 const { category, user } = db;
-const { checkAuth } = require("../middlewares/authMiddleware");
+const { privateAuth } = require("../middlewares/authMiddleware");
 
 // for user
 const getCatagories = async (req, res) => {
@@ -13,7 +13,7 @@ const getCatagories = async (req, res) => {
       title: "Category page",
       category: categories,
       token: req.cookies,
-      authRoute: checkAuth,
+      authRoute: privateAuth,
     });
   } catch (error) {
     return res.status(400).json({
@@ -108,7 +108,7 @@ const getCatagory = async (req, res) => {
       res.render("pages/updateCategory", {
         title: "Edit category",
         category: categories,
-        authRoute: checkAuth,
+        authRoute: privateAuth,
       });
     }
   } catch (error) {

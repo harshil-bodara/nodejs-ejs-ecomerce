@@ -10,14 +10,14 @@ const {
 } = require("../controllers/categoryController");
 const {
   userAuthMiddleware,
-  checkAuth,
+  privateAuth,
 } = require("../middlewares/authMiddleware");
 
-router.get("/", userAuthMiddleware, checkAuth, getCatagories);
+router.get("/", userAuthMiddleware, privateAuth, getCatagories);
 router.get("/",  getAllCatagories);
 router.post("/add", userAuthMiddleware, addCatagories);
 router.get("/delete/:id", userAuthMiddleware, deleteCatagory);
-router.get("/edit/:id", userAuthMiddleware, checkAuth, getCatagory);
+router.get("/edit/:id", userAuthMiddleware, privateAuth, getCatagory);
 router.post("/update/:id", userAuthMiddleware, updateCatagory);
 
 module.exports = router;

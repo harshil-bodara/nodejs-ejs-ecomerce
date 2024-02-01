@@ -20,7 +20,7 @@
     <%- include('../commonPages/header.ejs') %>
     <div class="container mx-auto border border-1 w-25 p-4 mt-5">
       <h4 class="mb-4">Update Product</h4>
-      <form action="/product/update/<%=product.id %>" method="post">
+      <form action="/product/update/<%=product.id %>" method="post" enctype="multipart/form-data">
         <input
           type="text"
           class="mb-4 mt-4 w-100 p-1"
@@ -29,18 +29,12 @@
           value="<%= product.name %>"
         />
 
-        <input
-          type="text"
-          class="mb-4 w-100 p-1"
-          placeholder="Enter description"
-          name="description"
-          value="<%= product.description %>"
-        />
-        <!-- <textarea
+        <textarea
           class="mb-3 w-100"
           placeholder="Enter description"
           name="description"
-        ><%= product.description %></textarea> -->
+          value="<%= product.description %>"
+        ><%= product.description %></textarea>
 
         <input
           type="number"
@@ -50,20 +44,11 @@
           value="<%= product.price %>"
         />
 
-        <!-- <input
-          type="text"
-          class="mb-4 w-100 p-1"
-          placeholder="Enter category"
-          name="category"
-          value="<%= product.category %>"
-        /> -->
-
-        <input type="file" class="mb-2" class="mb-2" name="image" /><br /><br />
+        <input type="file" class="mb-2" name="image" /><br /><br />
         <img src="/<%= product.image %>" width="50" />
         <br /><br />
         <input
           type="hidden"
-          class="mb-2"
           name="oldImage"
           value="<%= product.image %>"
         />

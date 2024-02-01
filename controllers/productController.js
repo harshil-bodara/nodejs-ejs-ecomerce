@@ -2,7 +2,7 @@ const db = require("../confic/db");
 const { product, category, user } = db;
 const Sequelize = require("sequelize");
 const fs = require("fs");
-const { checkAuth } = require("../middlewares/authMiddleware");
+const { privateAuth } = require("../middlewares/authMiddleware");
 
 // for user
 const getProducts = async (req, res) => {
@@ -18,12 +18,13 @@ const getProducts = async (req, res) => {
           as: "categories",
         },
       ],
+      where: { userId: id },
     });
     res.render("pages/product", {
       title: "Product page",
       product: products,
       category: categories,
-      authRoute: checkAuth,
+      authRoute: privateAuth,
     });
   } catch (error) {
     return res.status(400).json({
@@ -54,6 +55,7 @@ const addProducts = async (req, res) => {
     if (!name && description && category && price && filename) {
       throw new Error("All fields are required");
     } else {
+      const { id } = req.user;
       const createProduct = await product.create({
         name: name,
         description: description,
@@ -61,6 +63,7 @@ const addProducts = async (req, res) => {
         price: price,
         image: filename,
         categoryId: category,
+        userId: id,
       });
       let products = await createProduct.save();
       res.redirect("/product");
@@ -79,6 +82,7 @@ const deleteProduct = async (req, res) => {
         name: product.name,
       },
     });
+    
     if (allReadyExistProduct) {
       let products = await product.destroy({
         where: {
@@ -118,7 +122,7 @@ const getProduct = async (req, res) => {
         title: "Edit Product",
         product: products,
         category: categories,
-        authRoute: checkAuth,
+        authRoute: privateAuth,
       });
     }
   } catch (error) {
@@ -130,12 +134,11 @@ const getProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    let updateProduct = req.body;
     let newImage = "";
     if (req.file) {
       newImage = req.file.filename;
       try {
-        fs.unlinkSync("../upload" + req.body.oldImage);
+        fs.unlinkSync("upload/" + req.body.oldImage);
       } catch (error) {
         return res.status(400).json({
           message: error.message,
@@ -145,11 +148,20 @@ const updateProduct = async (req, res) => {
       newImage = req.body.oldImage;
     }
 
-    let products = await product.update(updateProduct, {
-      where: {
-        id: req.params.id,
+    let products = await product.update(
+      {
+        name: req.body.name,
+        description: req.body.description,
+        category: req.body.category,
+        price: req.body.price,
+        image: newImage,
       },
-    });
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    );
     res.render("pages/product", {
       product: products,
     });

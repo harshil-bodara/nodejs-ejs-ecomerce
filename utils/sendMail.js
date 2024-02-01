@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
-const sendMail = async (email, mailSubject, content) => {
+const sendMail = async (name, email, token) => {
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -17,8 +17,8 @@ const sendMail = async (email, mailSubject, content) => {
     const mailOption = {
       from: "jd.hmrtech@gmail.com",
       to: email,
-      subject: mailSubject,
-      html: content,
+      subject: "Forgot password",
+      html: `<p> Hii ${name} , <br>Please copy the link <a href="http://localhost:5000/resetPassword?token${token}">Reset</a>your password</p>`,
     };
 
     transporter.sendMail(mailOption, (err, info) => {

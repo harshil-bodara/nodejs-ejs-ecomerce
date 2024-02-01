@@ -21,19 +21,28 @@ db.category = require("../models/categoryModel.js")(sequelize, DataTypes);
 db.product = require("../models/productModel.js")(sequelize, DataTypes);
 
 // user to category Relation
-db.user.hasMany(db.category, { foreignKey: 'userId', as:'category' });
+db.user.hasMany(db.category, { foreignKey: "userId", as: "category" });
 db.category.belongsTo(db.user, {
-  foreignKey: 'userId',
-  as:'user',
+  foreignKey: "userId",
+  as: "user",
   constraints: true,
   onDelete: "CASCADE",
 });
 
 // category to product Relation
-db.category.hasMany(db.product, {foreignKey: 'categoryId', as:'product' });
+db.category.hasMany(db.product, { foreignKey: "categoryId", as: "product" });
 db.product.belongsTo(db.category, {
-  foreignKey: 'categoryId',
-  as:'categories',
+  foreignKey: "categoryId",
+  as: "categories",
+  constraints: true,
+  onDelete: "CASCADE",
+});
+
+// user to product Relation
+db.user.hasMany(db.product, { foreignKey: "userId", as: "product" });
+db.product.belongsTo(db.user, {
+  foreignKey: "userId",
+  as: "user",
   constraints: true,
   onDelete: "CASCADE",
 });
